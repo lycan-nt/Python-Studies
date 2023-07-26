@@ -63,3 +63,10 @@ def update(id: int, student: UpdateStudent):
         students[id].year = student.year
 
     return students[id]
+
+@app.delete("/delete/{id}")
+def delete(id: int):
+    if id not in students:
+        return {"Error": "Student does not exests"}
+    del students[id]
+    return {"Message": " Student deletes Successfully"}
