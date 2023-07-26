@@ -1,8 +1,20 @@
 from fastapi import FastAPI, Path
 from typing import Optional
 from pydantic import BaseModel
+from config import route_context
+from starlette.middleware.base import BaseHTTPMiddleware
 
 app = FastAPI()
+
+# Middleware para adicionar o contexto da rota
+class AddRouteContextMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        request.scope["path"] = request.scope["path"].replace(route_context, "", 1)
+        response = await call_next(request)
+        return response
+
+# Adiciona a Middleware em todas as rotas
+app.add_middleware(AddRouteContextMiddleware)
 
 students = {
     1: {
